@@ -1,0 +1,11 @@
+# Ignoring common data files
+*.log
+*.csv
+*.txt
+*.xlsx
+*.dat
+
+# Ignoring common directories
+data/
+venv/
+libs/__pycache__
