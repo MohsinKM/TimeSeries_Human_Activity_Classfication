@@ -60,7 +60,7 @@ class Prep(object):
         """
         if os.path.exists(cache_dir):
             self.logger.info("Data previously cached prepared and returning")
-            parent_df = pd.read_csv(cache_dir, low_memory=False)
+            parent_df = pd.read_csv(cache_dir)
             return parent_df
 
         self.logger.info(f"Reading all text files from: {dat_dir}")
