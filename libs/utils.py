@@ -1,7 +1,10 @@
 # This is for common utilities function
 import os
 import sys
+import shutil
+import zipfile
 import logging
+import urllib.request
 
 
 class Utils(object):
@@ -10,6 +13,7 @@ class Utils(object):
     """
     def __init__(self, proj_root):
         self.proj_root = proj_root
+        self.logger = self.build_logger("Utils")
         pass
 
     @staticmethod
@@ -18,6 +22,7 @@ class Utils(object):
         This method creates a logger for the caller module. Example:
         logger = build_logger("main")
         now logger.info("Print something") will print
+        Note: use f-string for message, no comma seperated arguments
         Args:
             name: caller module name, a string
 
@@ -38,8 +43,8 @@ class Utils(object):
         _logger.addHandler(screen_handler)
         return _logger
 
-    @staticmethod
-    def change_file_permissions_recursive(path, mode):
+
+    def change_file_permissions_recursive(self, path, mode):
         """
         This method is to change permission of files and directories.
         Args:
@@ -52,10 +57,10 @@ class Utils(object):
         for rt, dirs, files in os.walk(path, topdown=False):
             for dr in [os.path.join(rt, d) for d in dirs]:
                 os.chmod(dr, mode)
-                print(f"{os} permission changed to {mode}")
+                self.logger.info(f"{os} permission changed to {mode}")
         for file in [os.path.join(rt, f) for f in files]:
             os.chmod(file, mode)
-            print(f"{os} permission changed to {mode}")
+            self.logger.info(f"{os} permission changed to {mode}")
 
     def create_dirs(self):
         """
@@ -78,6 +83,37 @@ class Utils(object):
             if not os.path.exists(data_dir):
                 os.makedirs(data_dir)
                 self.change_file_permissions_recursive(data_dir, 0o777)
-                print("Directory ", data_dir, " Created ")
+                self.logger.info(f"Directory {data_dir} Created")
             else:
-                print("Directory ", data_dir, " already exists")
+                self.logger.info(f"Directory {data_dir} already exists")
+
+    def extract_zip_file(self, path_to_extract, zip_file_path):
+        """
+        Extract a zipped file.
+        Args:
+            path_to_extract: directory where extracted files will be saved
+            zip_file_path: .zip file path
+
+        Returns:
+            None
+        """
+        self.logger.info(f"Extracting..")
+        with zipfile.ZipFile(zip_file_path) as zf:
+            zf.extractall(path=path_to_extract)
+
+    def download_data(self, url, file_name):
+        """
+        Downloading data from the internet.
+        Args:
+            url: link of the zip file
+            file_name: file to be saved
+
+        Returns:
+            None
+        """
+
+        with urllib.request.urlopen(url) as response, \
+                open(file_name, 'wb') as out_file:
+            self.logger.info(f"Downloading data from {url} and saving to "
+                             f"{file_name}")
+            shutil.copyfileobj(response, out_file)

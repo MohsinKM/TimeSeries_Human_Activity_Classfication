@@ -1,8 +1,5 @@
 # This module is for data preparation
 import os
-import shutil
-import zipfile
-import urllib.request
 
 
 
@@ -12,28 +9,34 @@ class Prep(object):
     Data fetch, process cache and preparation
     """
 
-    def __init__(self, utils):
+    def __init__(self, utils, cfg):
         self.logger = utils.build_logger("Prep")
+        self.utils = utils
+        self.cfg = cfg
         pass
 
-    def download_data(self, url, file_name):
+    def fetch_data(self, url, dl_dir, ex_dir):
         """
-        Downloading data from the internet.
+        Downloads data from url, and save it to dl_dir and extract it to ex_dir
         Args:
-            url: link of the zip file
-            file_name: file to be saved
+            url: url to download data from
+            dl_dir: directory where to save
+            ex_dir: directory to extract zip file
 
-        Returns:
-            None
+        Returns:None
+
         """
-
-        if not os.path.exists(file_name):
-            with urllib.request.urlopen(url) as response, \
-                    open(file_name, 'wb') as out_file:
-                self.logger.info(f"Downloading data from {url} and saving to "
-                                 f"{file_name}")
-                shutil.copyfileobj(response, out_file)
-                with zipfile.ZipFile(file_name) as zf:
-                    zf.extractall()
+        # Download
+        self.logger.info("Trying to download data..")
+        if not os.path.exists(dl_dir):
+            self.utils.download_data(url, dl_dir)
         else:
-            self.logger.info(f"{file_name} already exist")
+            self.logger.info(f"{dl_dir} already exist")
+
+        # Extract
+        self.logger.info("Trying to extract data..")
+        if not (os.path.exists(self.cfg.ph_dat_dir) and os.path.exists(
+                self.cfg.wch_dat_dir)):
+            self.utils.extract_zip_file(ex_dir, dl_dir)
+        else:
+            self.logger.info(f"Data already extracted")
