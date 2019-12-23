@@ -10,7 +10,7 @@ class Config(object):
 
     prj_root = os.getcwd()
 
-    inp_dat_fname = os.path.join(prj_root, "data", "input")
+    inp_dat_fname = os.path.join(prj_root, "data", "input", "data.zip")
 
     def __init__(self):
         pass
