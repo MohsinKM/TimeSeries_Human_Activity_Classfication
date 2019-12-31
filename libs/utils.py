@@ -43,7 +43,6 @@ class Utils(object):
         _logger.addHandler(screen_handler)
         return _logger
 
-
     def change_file_permissions_recursive(self, path, mode):
         """
         This method is to change permission of files and directories.
@@ -74,9 +73,11 @@ class Utils(object):
         output_data_dir = os.path.join(self.proj_root, "data", "output")
         cached_data_dir = os.path.join(self.proj_root, "data", "cached")
         log_data_dir = os.path.join(self.proj_root, "log")
+        doc_dir = os.path.join(self.proj_root, "docs")
+
 
         dirs_to_create = [input_data_dir, output_data_dir, cached_data_dir,
-                          log_data_dir]
+                          log_data_dir, doc_dir]
         # Create target Directory if don't exist
 
         for data_dir in dirs_to_create:

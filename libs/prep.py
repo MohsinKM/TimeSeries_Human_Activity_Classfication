@@ -4,7 +4,6 @@ import glob
 import pandas as pd
 
 
-
 class Prep(object):
 
     """
@@ -17,7 +16,6 @@ class Prep(object):
         self.cfg = cfg
         pass
 
-
     def fetch_data(self, url, dl_dir, ex_dir):
         """
         Downloads data from url, and save it to dl_dir and extract it to ex_dir
@@ -27,7 +25,6 @@ class Prep(object):
             ex_dir: directory to extract zip file
 
         Returns:None
-
         """
         # Download
         self.logger.info("Trying to download data..")
@@ -44,11 +41,6 @@ class Prep(object):
         else:
             self.logger.info(f"Data already extracted")
 
-
-    def strip_semicolon(mystr):
-        return mystr.split(";")[0]
-
-
     def read_n_cache_all_txt_data(self, dat_dir, cache_dir):
         """
         Read all txt data and create master data frame
@@ -59,7 +51,8 @@ class Prep(object):
 
         """
         if os.path.exists(cache_dir):
-            self.logger.info("Data previously cached prepared and returning")
+            self.logger.info(f"Data previously cached, "
+                             f"reading from:{cache_dir} ")
             parent_df = pd.read_csv(cache_dir)
             return parent_df
 
@@ -71,8 +64,9 @@ class Prep(object):
         for file_nm in txt_files:
             file_path = os.path.join(dat_dir, file_nm)
             df = pd.read_csv(file_path, header=None)
-            df.columns = self.cfg.txt_data_cols
-            df['acc_z'] = df['acc_z'].str.rstrip(";")
+            df.columns = self.cfg.txt_data_cols  # setting column names
+            df['acc_z'] = df['acc_z'].str.rstrip(";")  # to remove ";" at the
+            # end of line
             df_list.append(df)
 
         # concatenation of all data frames to one
