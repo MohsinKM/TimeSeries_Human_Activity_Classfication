@@ -13,6 +13,12 @@ class Config(object):
     # PATH VARIABLES
     # ==========================================
     prj_root = os.getcwd()
+
+    # facilitating run from examples folder
+    path, filename = os.path.split(prj_root)
+    if filename == 'examples':
+        prj_root = path
+
     dl_data_dir = os.path.join(prj_root, "data", "input", "data.zip")
     ex_data_dir = os.path.join(prj_root, "data", "input")
 
